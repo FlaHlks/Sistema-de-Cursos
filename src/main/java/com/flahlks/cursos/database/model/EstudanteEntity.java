@@ -3,6 +3,9 @@ package com.flahlks.cursos.database.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "estudante")
 @AllArgsConstructor
@@ -19,4 +22,7 @@ public class EstudanteEntity {
     private String nome;
     @Column(nullable = false, unique = true)
     private String email;
+
+    @ManyToMany(mappedBy = "estudantesEntity")
+    private Set<CursoEntity> cursos = new HashSet<>();
 }
