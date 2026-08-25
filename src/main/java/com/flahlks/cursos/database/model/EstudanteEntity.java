@@ -1,10 +1,11 @@
 package com.flahlks.cursos.database.model;
 
+import com.flahlks.cursos.exception.MatriculaInvalidaException;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "estudante")
@@ -24,5 +25,13 @@ public class EstudanteEntity {
     private String email;
 
     @ManyToMany(mappedBy = "estudantesEntity")
-    private Set<CursoEntity> cursos = new HashSet<>();
+    private List<CursoEntity> cursos = new ArrayList<>();
+
+    public void adicionarCurso (CursoEntity curso) throws MatriculaInvalidaException {
+        if (cursos.contains(curso)) {
+            throw new MatriculaInvalidaException("Esse estudante já está matriculado neste curso");
+        }
+        cursos.add(curso);
+        curso.adicionarEstudante(this);
+    }
 }

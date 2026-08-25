@@ -1,14 +1,15 @@
 package com.flahlks.cursos.database.model;
 
+import com.flahlks.cursos.exception.MatriculaInvalidaException;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "curso")
 @Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -22,7 +23,7 @@ public class CursoEntity {
     @Column(nullable = false, unique = true)
     private String materia;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "professor_id")
     private ProfessorEntity professorEntity;
 
@@ -30,6 +31,12 @@ public class CursoEntity {
     @JoinTable(name = "inscricao",
             joinColumns = @JoinColumn(name = "curso_id"),
             inverseJoinColumns = @JoinColumn(name = "estudante_id"))
-    private Set<EstudanteEntity> estudantesEntity;
+    private List<EstudanteEntity> estudantesEntity = new ArrayList<>();
 
+    public void adicionarEstudante(EstudanteEntity estudante) throws MatriculaInvalidaException {
+        if (estudantesEntity.contains(estudante)) {
+            throw new MatriculaInvalidaException("O estudante já está matriculado neste curso");
+        }
+        estudantesEntity.add(estudante);
+    }
 }
