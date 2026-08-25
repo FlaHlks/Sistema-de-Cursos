@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ProfessorRepository extends JpaRepository<ProfessorEntity, Long> {
+
+    boolean existsByMateria(String materia);
 }

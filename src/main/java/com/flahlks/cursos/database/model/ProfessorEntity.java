@@ -3,8 +3,8 @@ package com.flahlks.cursos.database.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "professor")
@@ -20,8 +20,10 @@ public class ProfessorEntity {
     private Long id;
     @Column(nullable = false)
     private String nome;
+    @Column(nullable = false, unique = true)
+    private String materia;
 
     @OneToMany(mappedBy = "professorEntity", fetch = FetchType.LAZY)
-    private Set<CursoEntity> cursos = new HashSet<>();
+    private List<CursoEntity> cursos = new ArrayList<>();
 
 }
