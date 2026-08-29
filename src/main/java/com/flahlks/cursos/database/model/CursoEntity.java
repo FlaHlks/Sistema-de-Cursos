@@ -1,6 +1,7 @@
 package com.flahlks.cursos.database.model;
 
 import com.flahlks.cursos.exception.MatriculaInvalidaException;
+import com.flahlks.cursos.exception.AtribuicaoInvalidaException;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,9 +19,9 @@ public class CursoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false)
-    private String nome;
     @Column(nullable = false, unique = true)
+    private String nome;
+    @Column(nullable = false)
     private String materia;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -30,13 +31,31 @@ public class CursoEntity {
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "inscricao",
             joinColumns = @JoinColumn(name = "curso_id"),
-            inverseJoinColumns = @JoinColumn(name = "estudante_id"))
+            inverseJoinColumns = @JoinColumn(name = "estudante_id"),
+            uniqueConstraints = @UniqueConstraint(columnNames = {"curso_id", "estudante_id"}))
     private List<EstudanteEntity> estudantesEntity = new ArrayList<>();
 
-    public void adicionarEstudante(EstudanteEntity estudante) throws MatriculaInvalidaException {
-        if (estudantesEntity.contains(estudante)) {
-            throw new MatriculaInvalidaException("O estudante já está matriculado neste curso");
-        }
+    public void adicionarEstudante(EstudanteEntity estudante) {
         estudantesEntity.add(estudante);
+    }
+
+    public void adicionarProfessor(ProfessorEntity professor) {
+        if (professorEntity != null) {
+            throw new AtribuicaoInvalidaException("Este curso já tem um professor");
+        }
+        this.professorEntity = professor;
+        professor.adicionarCurso(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        CursoEntity curso = (CursoEntity) o;
+        return id != null && id.equals(curso.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }

@@ -12,7 +12,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Setter
 @Builder
 public class EstudanteEntity {
 
@@ -27,11 +26,23 @@ public class EstudanteEntity {
     @ManyToMany(mappedBy = "estudantesEntity")
     private List<CursoEntity> cursos = new ArrayList<>();
 
-    public void adicionarCurso (CursoEntity curso) throws MatriculaInvalidaException {
+    public void adicionarCurso (CursoEntity curso) {
         if (cursos.contains(curso)) {
             throw new MatriculaInvalidaException("Esse estudante já está matriculado neste curso");
         }
         cursos.add(curso);
         curso.adicionarEstudante(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        EstudanteEntity estudante = (EstudanteEntity) o;
+        return id != null && id.equals(estudante.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }
