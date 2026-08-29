@@ -5,5 +5,5 @@ import jakarta.validation.constraints.Size;
 import lombok.Builder;
 
 @Builder
-public record ProfessorDto(@NotBlank @Size(min = 5, max = 50) String nome) {
+public record EstudanteDtoCurso(@NotBlank @Size(min = 3, max = 50) String nome) {
 }
